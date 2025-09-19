@@ -1,1 +1,0 @@
-GENERAL WAIT stand00.msa 100
