@@ -1,0 +1,2 @@
+#define LOCALE_SERVICE_HONGKONG			// 홍콩
+
