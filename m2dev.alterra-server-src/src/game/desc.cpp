@@ -76,7 +76,7 @@ void DESC::Initialize()
 	m_bPong = true;
 	m_bChannelStatusRequested = false;
 
-	m_SequenceGenerator.seed(SEQUENCE_SEED);
+	m_dwSequenceIndex = 0;
 
 	m_dwMatrixRows = m_dwMatrixCols = 0;
 	m_bMatrixTryCount = 0;
@@ -925,7 +925,9 @@ bool DESC::IsAdminMode()
 
 BYTE DESC::GetSequence()
 {
-	return m_SequenceGenerator(UINT8_MAX + 1);
+	BYTE bSeq = gc_abSequence[m_dwSequenceIndex];
+	m_dwSequenceIndex = (m_dwSequenceIndex + 1) % SEQUENCE_MAX_NUM;
+	return bSeq;
 }
 
 void DESC::SendLoginSuccessPacket()

@@ -1,10 +1,11 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "utils.h"
 #include "config.h"
 #include "char.h"
 #include "sectree_manager.h"
 #include "battle.h"
 #include "affect.h"
+#include <limits>
 #include "shop_manager.h"
 
 int	OnClickShop(TRIGGERPARAM);
@@ -61,7 +62,7 @@ class FuncFindMobVictim
 	public:
 		FuncFindMobVictim(LPCHARACTER pkChr, int iMaxDistance) :
 			m_pkChr(pkChr),
-			m_iMinDistance(~(1L << 31)),
+			m_iMinDistance(std::numeric_limits<int>::max()),
 			m_iMaxDistance(iMaxDistance),
 			m_lx(pkChr->GetX()),
 			m_ly(pkChr->GetY()),

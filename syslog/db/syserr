@@ -1,0 +1,7 @@
+SYSERR: Sep 20 17:10:35 :: pid_init: 
+Start of pid: 1191
+
+SYSERR: Sep 20 17:10:35 :: Start: TABLE_POSTFIX not configured use default
+SYSERR: Sep 20 17:10:35 :: QueryLocaleSet: cannot set locale latin1 by 'mysql_set_character_set', errno 2006 Server has gone away
+SYSERR: Sep 20 17:10:35 :: QueryLocaleSet: cannot set locale latin1 by 'mysql_set_character_set', errno 2006 Server has gone away
+SYSERR: Sep 20 17:10:35 :: QueryLocaleSet: cannot set locale latin1 by 'mysql_set_character_set', errno 2006 Server has gone away

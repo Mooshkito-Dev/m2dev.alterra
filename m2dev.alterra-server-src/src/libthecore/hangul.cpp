@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 int is_hangul(const BYTE* str)
 {
@@ -37,14 +37,15 @@ const char* first_han(const BYTE* str)
 {
     unsigned char high, low;
     int len, i;
-    char* p = "그외";
+	static const char fallback[] = "??";
+	const char* p = fallback;
 
     static const char* wansung[] =
     {
-        "가","가","나","다","다",
-        "라","마","바","바","사",
-        "사","아","자","자","차",
-        "카","타","파","하",""
+        "?","?","?","?","?",
+        "?","?","?","?","?",
+        "?","?","?","?","?",
+        "?","?","?","?",""
     };
 
     static const char* johab[] =

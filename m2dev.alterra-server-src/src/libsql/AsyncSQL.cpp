@@ -1,4 +1,4 @@
-﻿#ifndef OS_WINDOWS
+#ifndef OS_WINDOWS
 #include <sys/time.h>
 #endif
 
@@ -145,10 +145,10 @@ bool CAsyncSQL::Connect()
 
 	fprintf(stdout, "AsyncSQL: connected to %s (reconnect %d)\n", m_stHost.c_str(), reconnect);
 
-	// db cache는 common db의 LOCALE 테이블에서 locale을 알아오고, 이후 character set을 수정한다.
-	// 따라서 최초 Connection을 맺을 때에는 locale을 모르기 때문에 character set을 정할 수가 없음에도 불구하고,
-	// 강제로 character set을 euckr로 정하도록 되어있어 이 부분을 주석처리 하였다.
-	// (아래 주석을 풀면 mysql에 euckr이 안 깔려있는 디비에 접근할 수가 없다.)
+	// db cache? common db? LOCALE ????? locale? ????, ?? character set? ????.
+	// ??? ?? Connection? ?? ??? locale? ??? ??? character set? ?? ?? ???? ????,
+	// ??? character set? euckr? ???? ???? ? ??? ???? ???.
+	// (?? ??? ?? mysql? euckr? ? ???? ??? ??? ?? ??.)
 	//while (!QueryLocaleSet());
 	m_ulThreadID = mysql_thread_id(&m_hDB);
 
@@ -236,7 +236,7 @@ void CAsyncSQL::Quit()
 	if (m_hThread)
 	{
 		pthread_join(m_hThread, NULL);
-		m_hThread = NULL;
+		m_hThread = 0;
 	}
 #else
 	if (m_hThread != INVALID_HANDLE_VALUE) {
@@ -529,7 +529,7 @@ class cProfiler
 
 void CAsyncSQL::ChildLoop()
 {
-	cProfiler profiler(500000); // 0.5초
+	cProfiler profiler(500000); // 0.5?
 
 	while (!m_bEnd)
 	{
@@ -546,7 +546,7 @@ void CAsyncSQL::ChildLoop()
 
 		while (count--)
 		{
-			//시간 체크 시작 
+			//?? ?? ?? 
 			profiler.Start();
 
 			if (!PeekQueryFromCopyQueue(&p))
@@ -591,7 +591,7 @@ void CAsyncSQL::ChildLoop()
 
 			profiler.Stop();
 			
-			// 0.5초 이상 걸렸으면 로그에 남기기
+			// 0.5? ?? ???? ??? ???
 			if (!profiler.IsOk())
 				sys_log(0, "[QUERY : LONG INTERVAL(OverSec %ld.%ld)] : %s", 
 						profiler.GetResultSec(), profiler.GetResultUSec(), p->stQuery.c_str());
@@ -693,9 +693,9 @@ size_t CAsyncSQL::EscapeString(char* dst, size_t dstSize, const char *src, size_
 
 	if (dstSize < srcSize * 2 + 1)
 	{
-		// \0이 안붙어있을 때를 대비해서 256 바이트만 복사해서 로그로 출력
+		// \0? ????? ?? ???? 256 ???? ???? ??? ??
 		char tmp[256];
-		size_t tmpLen = sizeof(tmp) > srcSize ? srcSize : sizeof(tmp); // 둘 중에 작은 크기
+		size_t tmpLen = sizeof(tmp) > srcSize ? srcSize : sizeof(tmp); // ? ?? ?? ??
 		strlcpy(tmp, src, tmpLen);
 
 		sys_err("FATAL ERROR!! not enough buffer size (dstSize %u srcSize %u src%s: %s)",

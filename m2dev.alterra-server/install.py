@@ -7,6 +7,8 @@ import subprocess
 import channels
 
 GAMEDIR = os.getcwd()
+PACKAGE_DIR = os.path.join(GAMEDIR, 'share', 'package')
+os.makedirs(PACKAGE_DIR, exist_ok=True)
 
 def write_lines_to_files(path, lines):
 	with open(path, "w") as f:
@@ -55,6 +57,7 @@ def setup_links_game(target_dir, name):
 	try_symlink(os.path.join(GAMEDIR, "share", "data"), "data", is_dir=True)
 	try_symlink(os.path.join(GAMEDIR, "share", "locale"), "locale", is_dir=True)
 	try_symlink(os.path.join(GAMEDIR, "share", "mark"), "mark", is_dir=True)
+	try_symlink(PACKAGE_DIR, "package", is_dir=True)
 	try_symlink(os.path.join(GAMEDIR, "share", "bin", "game"), name, is_dir=False)
 
 # Helper function to create symlinks cross-platform

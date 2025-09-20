@@ -1,4 +1,4 @@
-﻿file(GLOB_RECURSE GAME_SOURCES "*.h" "*.c" "*.cpp")
+file(GLOB_RECURSE GAME_SOURCES "*.h" "*.c" "*.cpp")
 
 add_executable(game ${GAME_SOURCES})
 
@@ -20,5 +20,9 @@ target_link_libraries(game
 if (WIN32)
 	target_link_libraries(game ws2_32)
 else()
-	target_link_libraries(game pthread md)
+	target_link_libraries(game pthread)
+	if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+		target_link_libraries(game md)
+	endif()
 endif()
+

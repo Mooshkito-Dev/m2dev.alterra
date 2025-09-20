@@ -1,74 +1,75 @@
-﻿#pragma once
+#pragma once
 
-#ifndef OS_WINDOWS
+typedef struct fdwatch		FDWATCH;
+typedef struct fdwatch *	LPFDWATCH;
 
-    typedef struct fdwatch		FDWATCH;
-    typedef struct fdwatch *	LPFDWATCH;
+enum EFdwatch
+{
+	FDW_NONE			= 0,
+	FDW_READ			= 1,
+	FDW_WRITE			= 2,
+	FDW_WRITE_ONESHOT	= 4,
+	FDW_EOF				= 8,
+};
 
-    enum EFdwatch
-    {
-		FDW_NONE			= 0,
-		FDW_READ			= 1,
-		FDW_WRITE			= 2,
-		FDW_WRITE_ONESHOT	= 4,
-		FDW_EOF				= 8,
-    };
+#if defined(OS_WINDOWS) || defined(__USE_SELECT__)
 
-    typedef struct kevent	KEVENT;
-    typedef struct kevent *	LPKEVENT;
-    typedef int				KQUEUE;
+struct fdwatch
+{
+	fd_set rfd_set;
+	fd_set wfd_set;
 
-    struct fdwatch
-    {
-		KQUEUE		kq;
+	socket_t* select_fds;
+	int* select_rfdidx;
 
-		int		nfiles;
+	int nselect_fds;
 
-		LPKEVENT	kqevents;
-		int		nkqevents;
+	fd_set working_rfd_set;
+	fd_set working_wfd_set;
 
-		LPKEVENT	kqrevents;
-		int *		fd_event_idx;
+	int nfiles;
 
-		void **		fd_data;
-		int *		fd_rw;
-    };
+	void** fd_data;
+	int* fd_rw;
+};
+
+#elif defined(__USE_EPOLL__)
+
+struct fdwatch
+{
+	int epfd;
+	int nfiles;
+
+	struct epoll_event* events;
+	int nevents;
+
+	void** fd_data;
+	int* fd_rw;
+};
 
 #else
 
-    typedef struct fdwatch		FDWATCH;
-    typedef struct fdwatch *	LPFDWATCH;
+typedef struct kevent	KEVENT;
+typedef struct kevent *	LPKEVENT;
+typedef int			KQUEUE;
 
-    enum EFdwatch
-    {
-		FDW_NONE			= 0,
-		FDW_READ			= 1,
-		FDW_WRITE			= 2,
-		FDW_WRITE_ONESHOT	= 4,
-		FDW_EOF				= 8,
-    };
+struct fdwatch
+{
+	KQUEUE		kq;
 
-    struct fdwatch
-    {
-		fd_set rfd_set;
-		fd_set wfd_set;
+	int		nfiles;
 
-		socket_t* select_fds;
-		int* select_rfdidx;
+	LPKEVENT	kqevents;
+	int		nkqevents;
 
-		int nselect_fds;
+	LPKEVENT	kqrevents;
+	int *		fd_event_idx;
 
-		fd_set working_rfd_set;
-		fd_set working_wfd_set;
+	void **		fd_data;
+	int *		fd_rw;
+};
 
-		int nfiles;
-
-		void** fd_data;
-		int* fd_rw;
-    };
-
-#endif // WIN32
-
+#endif // platform selection
 
 LPFDWATCH	fdwatch_new(int nfiles);
 void		fdwatch_clear_fd(LPFDWATCH fdw, socket_t fd);
@@ -82,4 +83,3 @@ void *		fdwatch_get_client_data(LPFDWATCH fdw, unsigned int event_idx);
 void		fdwatch_del_fd(LPFDWATCH fdw, socket_t fd);
 int			fdwatch_get_buffer_size(LPFDWATCH fdw, socket_t fd);
 int			fdwatch_get_ident(LPFDWATCH fdw, unsigned int event_idx);
-

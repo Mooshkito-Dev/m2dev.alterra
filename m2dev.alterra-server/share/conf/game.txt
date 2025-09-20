@@ -1,8 +1,9 @@
 DB_PORT: 9000
-ACCOUNT_SQL: localhost mt2 mt2@pw account
-PLAYER_SQL: localhost mt2 mt2@pw player
-COMMON_SQL: localhost mt2 mt2@pw common
-LOG_SQL: 	localhost mt2 mt2@pw log
+DB_ADDR: 192.168.1.49
+ACCOUNT_SQL: 192.168.1.49 alterra Matosxxl81100 account
+PLAYER_SQL: 192.168.1.49 alterra Matosxxl81100 player
+COMMON_SQL: 192.168.1.49 alterra Matosxxl81100 common
+LOG_SQL: 	192.168.1.49 alterra Matosxxl81100 log
 TABLE_POSTFIX: 
 PASSES_PER_SEC: 60
 SAVE_EVENT_SECOND_CYCLE: 180

@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "constants.h"
 #include "config.h"
 #include "event.h"
@@ -59,6 +59,13 @@
 #include "skill_power.h"
 #include "SpeedServer.h"
 #include "DragonSoul.h"
+#if defined(OS_FREEBSD)
+#define RESET_GETOPT() (optreset = 1)
+#elif !defined(OS_WINDOWS)
+#define RESET_GETOPT() (optind = 1)
+#else
+#define RESET_GETOPT() ((void)0)
+#endif
 #ifndef OS_WINDOWS
 	#include "limit_time.h"
 #endif
@@ -77,7 +84,7 @@
 #include <execinfo.h>
 #endif
 
-// 윈도우에서 테스트할 때는 항상 서버키 체크
+// ????? ???? ?? ?? ??? ??
 #ifdef _WIN32
 	//#define _USE_SERVER_KEY_
 #endif
@@ -98,10 +105,10 @@ void WriteMallocMessage(const char* p1, const char* p2, const char* p3, const ch
 #endif
 
 // TRAFFIC_PROFILER
-static const DWORD	TRAFFIC_PROFILE_FLUSH_CYCLE = 3600;	///< TrafficProfiler 의 Flush cycle. 1시간 간격
+static const DWORD	TRAFFIC_PROFILE_FLUSH_CYCLE = 3600;	///< TrafficProfiler ? Flush cycle. 1?? ??
 // END_OF_TRAFFIC_PROFILER
 
-// 게임과 연결되는 소켓
+// ??? ???? ??
 volatile int	num_events_called = 0;
 int             max_bytes_written = 0;
 int             current_bytes_written = 0;
@@ -173,11 +180,11 @@ void ShutdownOnFatalError()
 		{
 			char buf[256];
 
-			strlcpy(buf, LC_TEXT("서버에 치명적인 오류가 발생하여 자동으로 재부팅됩니다."), sizeof(buf));
+			strlcpy(buf, LC_TEXT("??? ???? ??? ???? ???? ??????."), sizeof(buf));
 			SendNotice(buf);
-			strlcpy(buf, LC_TEXT("10초후 자동으로 접속이 종료되며,"), sizeof(buf));
+			strlcpy(buf, LC_TEXT("10?? ???? ??? ????,"), sizeof(buf));
 			SendNotice(buf);
-			strlcpy(buf, LC_TEXT("5분 후에 정상적으로 접속하실수 있습니다."), sizeof(buf));
+			strlcpy(buf, LC_TEXT("5? ?? ????? ????? ????."), sizeof(buf));
 			SendNotice(buf);
 		}
 
@@ -234,7 +241,7 @@ void heartbeat(LPHEART ht, int pulse)
 
 	t = get_dword_time();
 
-	// 1초마다
+	// 1???
 	if (!(pulse % ht->passes_per_sec))
 	{
 #ifdef ENABLE_LIMIT_TIME
@@ -291,14 +298,14 @@ void heartbeat(LPHEART ht, int pulse)
 	}
 
 	//
-	// 25 PPS(Pulse per second) 라고 가정할 때
+	// 25 PPS(Pulse per second) ?? ??? ?
 	//
 
-	// 약 1.16초마다
+	// ? 1.16???
 	if (!(pulse % (passes_per_sec + 4)))
 		CHARACTER_MANAGER::instance().ProcessDelayedSave();
 
-	//4초 마다
+	//4? ??
 #if defined (OS_FREEBSD) && defined(__FILEMONITOR__)
 	if (!(pulse % (passes_per_sec * 5)))
 	{
@@ -306,7 +313,7 @@ void heartbeat(LPHEART ht, int pulse)
 	}
 #endif
 
-	// 약 5.08초마다
+	// ? 5.08???
 	if (!(pulse % (passes_per_sec * 5 + 2)))
 	{
 		ITEM_MANAGER::instance().Update();
@@ -365,13 +372,13 @@ void Metin2Server_Check()
 		return;
 
 
-	// 브라질 ip
+	// ??? ip
 	if (strncmp (g_szPublicIP, "189.112.1", 9) == 0)
 	{
 		return;
 	}
 
-	// 캐나다 ip
+	// ??? ip
 	if (strncmp (g_szPublicIP, "74.200.6", 8) == 0)
 	{
 		return;
@@ -395,7 +402,7 @@ void Metin2Server_Check()
 
 	if (0 > sockConnector)
 	{
-		if (true != LC_IsEurope()) // 유럽은 접속을 하지 못하면 인증된 것으로 간주
+		if (true != LC_IsEurope()) // ??? ??? ?? ??? ??? ??? ??
 			g_isInvalidServer = true;
 
 		return;
@@ -650,7 +657,7 @@ int start(int argc, char **argv)
 				printf("IP %s\n", g_szPublicIP);
 
 				optind++;
-				optreset = 1;
+				RESET_GETOPT();
 				break;
 
 			case 'p': // port
@@ -665,7 +672,7 @@ int start(int argc, char **argv)
 				printf("port %d\n", mother_port);
 
 				optind++;
-				optreset = 1;
+				RESET_GETOPT();
 				break;
 
 			case 'l':
@@ -675,7 +682,7 @@ int start(int argc, char **argv)
 					log_set_level(l);
 
 					optind++;
-					optreset = 1;
+				RESET_GETOPT();
 				}
 				break;
 
@@ -685,7 +692,7 @@ int start(int argc, char **argv)
 					if (optind < argc)
 					{
 						st_localeServiceName = argv[optind++];
-						optreset = 1;
+				RESET_GETOPT();
 					}
 				}
 				break;
@@ -923,7 +930,7 @@ int io_loop(LPFDWATCH fdw)
 	LPDESC	d;
 	int		num_events, event_idx;
 
-	DESC_MANAGER::instance().DestroyClosed(); // PHASE_CLOSE인 접속들을 끊어준다.
+	DESC_MANAGER::instance().DestroyClosed(); // PHASE_CLOSE? ???? ????.
 	DESC_MANAGER::instance().TryConnect();
 
 	if ((num_events = fdwatch(fdw, 0)) < 0)

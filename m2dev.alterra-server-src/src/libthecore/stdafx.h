@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #if defined(__GNUC__)
 #define INLINE __inline__
@@ -67,7 +67,11 @@ inline double rint(double x)
 #else
 
 #ifndef OS_FREEBSD
+#if defined(__linux__)
+#define __USE_EPOLL__
+#else
 #define __USE_SELECT__
+#endif
 #ifdef __CYGWIN__
 #define _POSIX_SOURCE 1
 #endif
@@ -93,6 +97,10 @@ inline double rint(double x)
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/socket.h>
+
+#if defined(__USE_EPOLL__)
+#include <sys/epoll.h>
+#endif
 
 #include <sys/signal.h>
 #include <sys/wait.h>

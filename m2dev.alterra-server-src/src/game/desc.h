@@ -7,7 +7,7 @@
 #include "cipher.h"
 #endif
 
-#include <pcg_random.hpp>
+#include <cstdint>
 
 #define SEQUENCE_SEED 0
 #define MAX_ALLOW_USER                  4096
@@ -234,7 +234,7 @@ class DESC
 		bool			m_bAdminMode; // Handshake 에서 어드민 명령을 쓸수있나?
 		bool			m_bPong;
 
-		pcg32 			m_SequenceGenerator;
+		uint32_t		m_dwSequenceIndex;
 
 		DWORD			m_dwMatrixRows;
 		DWORD			m_dwMatrixCols;

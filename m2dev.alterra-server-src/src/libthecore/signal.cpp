@@ -1,10 +1,10 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #ifdef OS_WINDOWS
 void signal_setup() {}
 void signal_timer_disable() {}
 void signal_timer_enable(int timeout_seconds) {}
-#elif OS_FREEBSD
+#else
 #define RETSIGTYPE void
 
 RETSIGTYPE reap(int sig)

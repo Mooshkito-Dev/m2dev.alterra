@@ -1,13 +1,15 @@
-﻿file(GLOB_RECURSE QC_SOURCES "*.h" "*.cpp")
+file(GLOB_RECURSE QC_SOURCES "*.h" "*.cpp")
 
 add_executable(qc ${QC_SOURCES})
 
-target_link_libraries(qc 
-	liblua 
+target_link_libraries(qc
+	liblua
 )
 
 if (WIN32)
-	target_link_libraries(db ws2_32)
+	target_link_libraries(qc ws2_32)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+	target_link_libraries(qc pthread md)
 else()
-	target_link_libraries(db pthread md)
+	target_link_libraries(qc pthread)
 endif()

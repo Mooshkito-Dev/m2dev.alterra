@@ -1,4 +1,4 @@
-﻿file(GLOB_RECURSE DB_SOURCES "*.h" "*.cpp")
+file(GLOB_RECURSE DB_SOURCES "*.h" "*.cpp")
 
 add_executable(db ${DB_SOURCES})
 
@@ -18,5 +18,8 @@ target_link_libraries(db
 if (WIN32)
 	target_link_libraries(db ws2_32)
 else()
-	target_link_libraries(db pthread md)
+	target_link_libraries(db pthread)
+	if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+		target_link_libraries(db md)
+	endif()
 endif()

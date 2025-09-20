@@ -8,6 +8,8 @@
 #include "ItemAwardManager.h"
 #include "HB.h"
 #include "Cache.h"
+#include <string>
+#include <cstring>
 
 extern bool g_bHotBackup;
 
@@ -893,19 +895,21 @@ void CClientManager::__QUERY_PLAYER_CREATE(CPeer *peer, DWORD dwHandle, TPlayerC
 			packet->player_table.ht, 
 			packet->player_table.job);
 
-	static char text[4096 + 1];
-
-	CDBManager::instance().EscapeString(text, packet->player_table.skills, sizeof(packet->player_table.skills));
-	queryLen += snprintf(queryStr + queryLen, sizeof(queryStr) - queryLen, "'%s', ", text);
+	std::string escapedSkills;
+	escapedSkills.resize(sizeof(packet->player_table.skills) * 2 + 1);
+	size_t escapedSkillsLen = CDBManager::instance().EscapeString(&escapedSkills[0], packet->player_table.skills, sizeof(packet->player_table.skills));
+	escapedSkills.resize(escapedSkillsLen);
+	queryLen += snprintf(queryStr + queryLen, sizeof(queryStr) - queryLen, "'%s', ", escapedSkills.c_str());
 	if (g_test_server)
-		sys_log(0, "Create_Player queryLen[%d] TEXT[%s]", queryLen, text);
-
-	CDBManager::instance().EscapeString(text, packet->player_table.quickslot, sizeof(packet->player_table.quickslot));
-	queryLen += snprintf(queryStr + queryLen, sizeof(queryStr) - queryLen, "'%s')", text);
-
+		sys_log(0, "Create_Player queryLen[%d] TEXT[%s]", queryLen, escapedSkills.c_str());
+	std::string escapedQuickslot;
+	escapedQuickslot.resize(sizeof(packet->player_table.quickslot) * 2 + 1);
+	size_t escapedQuickslotLen = CDBManager::instance().EscapeString(&escapedQuickslot[0], packet->player_table.quickslot, sizeof(packet->player_table.quickslot));
+	escapedQuickslot.resize(escapedQuickslotLen);
+	queryLen += snprintf(queryStr + queryLen, sizeof(queryStr) - queryLen, "'%s')", escapedQuickslot.c_str());
 	std::unique_ptr<SQLMsg> pMsg2(CDBManager::instance().DirectQuery(queryStr));
 	if (g_test_server)
-		sys_log(0, "Create_Player queryLen[%d] TEXT[%s]", queryLen, text);
+		sys_log(0, "Create_Player queryLen[%d] TEXT[%s]", queryLen, escapedQuickslot.c_str());
 
 	if (pMsg2->Get()->uiAffectedRows <= 0)
 	{

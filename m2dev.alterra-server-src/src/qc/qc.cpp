@@ -31,6 +31,7 @@ extern "C"
 #include <errno.h>
 
 #include "crc32.h"
+#include <cstring>
 
 #define OUTPUT_FOLDER "object"
 

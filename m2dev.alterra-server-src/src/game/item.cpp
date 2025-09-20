@@ -1421,14 +1421,10 @@ EVENTFUNC(real_time_expire_event)
 
 	if (current > item->GetSocket(0))
 	{
-		switch (item->GetVnum())
+		if (item->IsNewMountItem())
 		{
-			if(item->IsNewMountItem())
-			{
-				if (item->GetSocket(2) != 0)
-					item->ClearMountAttributeAndAffect();
-			}
-			break;
+			if (item->GetSocket(2) != 0)
+				item->ClearMountAttributeAndAffect();
 		}
 
 		ITEM_MANAGER::instance().RemoveItem(item, "REAL_TIME_EXPIRE");
